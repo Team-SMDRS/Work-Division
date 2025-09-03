@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroBanking System - Team Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            color: #718096;
+            font-size: 1.1rem;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .member-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .member-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transition: left 0.3s ease;
+        }
+
+        .member-card:hover::before {
+            left: 0;
+        }
+
+        .member-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .member-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .member-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 1.2rem;
+            margin-right: 15px;
+        }
+
+        .member-info h3 {
+            color: #2d3748;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+
+        .member-role {
+            color: #718096;
+            font-size: 0.9rem;
+            background: #f7fafc;
+            padding: 4px 8px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        .task-count {
+            background: #e6fffa;
+            color: #38b2ac;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .work-display {
+            margin-top: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 30px;
+            display: none;
+            animation: slideInUp 0.5s ease-out;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .work-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .work-header h2 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin-left: 15px;
+        }
+
+        .work-section {
+            margin-bottom: 25px;
+        }
+
+        .work-section h3 {
+            color: #4a5568;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .work-section h3::before {
+            content: '▶';
+            color: #667eea;
+            margin-right: 8px;
+            font-size: 0.8rem;
+        }
+
+        .file-list, .route-list, .function-list {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .file-item, .route-item, .function-item {
+            padding: 8px 12px;
+            margin: 5px 0;
+            background: #f1f5f9;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            color: #2d3748;
+            border-left: 3px solid #667eea;
+        }
+
+        .route-item {
+            border-left-color: #48bb78;
+        }
+
+        .function-item {
+            border-left-color: #ed8936;
+        }
+
+        .close-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .close-btn:hover {
+            background: #5a67d8;
+        }
+
+        .github-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .github-btn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .github-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .team-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏦 MicroBanking System</h1>
+            <p>Team Development Dashboard - Task Distribution</p>
+        </div>
+
+        <div class="team-grid">
+            <div class="member-card" onclick="showWork('sangeeth')">
+                <div class="member-header">
+                    <div class="member-avatar">S</div>
+                    <div class="member-info">
+                        <h3>Sangeeth</h3>
+                        <span class="member-role">Team Lead - Auth & Security</span>
+                    </div>
+                </div>
+                <div class="task-count">12+ Advanced Tasks</div>
+            </div>
+
+            <div class="member-card" onclick="showWork('maneesha')">
+                <div class="member-header">
+                    <div class="member-avatar">M</div>
+                    <div class="member-info">
+                        <h3>Maneesha</h3>
+                        <span class="member-role">Account Management</span>
+                    </div>
+                </div>
+                <div class="task-count">6 API Routes</div>
+            </div>
+
+            <div class="member-card" onclick="showWork('ranuga')">
+                <div class="member-header">
+                    <div class="member-avatar">R</div>
+                    <div class="member-info">
+                        <h3>Ranuga</h3>
+                        <span class="member-role">Transaction Management</span>
+                    </div>
+                </div>
+                <div class="task-count">6 API Routes</div>
+            </div>
+
+            <div class="member-card" onclick="showWork('dewni')">
+                <div class="member-header">
+                    <div class="member-avatar">D</div>
+                    <div class="member-info">
+                        <h3>Dewni</h3>
+                        <span class="member-role">Customer & Branch Management</span>
+                    </div>
+                </div>
+                <div class="task-count">8 API Routes</div>
+            </div>
+
+            <div class="member-card" onclick="showWork('sajiv')">
+                <div class="member-header">
+                    <div class="member-avatar">S</div>
+                    <div class="member-info">
+                        <h3>Sajiv</h3>
+                        <span class="member-role">FD & Plans Management</span>
+                    </div>
+                </div>
+                <div class="task-count">8 API Routes</div>
+            </div>
+        </div>
+
+        <!-- Work Display Area -->
+        <div id="workDisplay" class="work-display">
+            <!-- Content will be dynamically loaded here -->
+        </div>
+
+        <div class="github-link">
+            <a href="https://github.com/Team-SMDRS" class="github-btn">📂 View GitHub Repository</a>
+        </div>
+    </div>
+
+    <script>
+        const workData = {
+            sangeeth: {
+                name: "Sangeeth",
+                role: " Authentication & Security",
+                files: [
+                    "app/api/auth_advanced_routes.py",
+                    "app/api/role_management_routes.py",
+                    "app/repositories/auth_repo.py",
+                    "app/repositories/role_repo.py",
+                    "app/services/auth_service.py",
+                    "app/services/role_service.py",
+                    "app/middleware/role_middleware.py",
+                    "app/middleware/permission_middleware.py",
+                    "app/schemas/auth_schema.py",
+                    "app/schemas/role_schema.py",
+                    "app/core/security.py",
+                    "app/core/permissions.py"
+                ],
+                routes: [
+                    "POST /auth/login - Advanced login with role validation",
+                    "POST /auth/refresh-token - Token refresh mechanism",
+                    "POST /auth/logout - Secure logout with token invalidation",
+                    "POST /auth/reset-password - Password reset workflow",
+                    "GET /auth/permissions - Get user permissions",
+                    "POST /roles/assign - Assign roles to users",
+                    "GET /roles/hierarchy - Get role hierarchy",
+                    "POST /roles/permissions/update - Update role permissions",
+                    "GET /audit/login-attempts - Security audit logs",
+                    "POST /auth/change-password - Secure password change"
+                ],
+                sqlFunctions: [
+                    "-- Advanced login with activity logging",
+                    "-- Password reset functionality",
+                    "-- Session management",
+                    "-- Multi-factor authentication setup",
+                    "-- Login attempt tracking and lockout",
+                    "-- Token refresh and revocation",
+                    "-- Activity logging for security events",
+                    "-- Dynamic role assignment",
+                    "-- Permission matrix management",
+                    "-- Branch-based role restrictions"
+                ]
+            },
+            maneesha: {
+                name: "Maneesha",
+                role: "Account Management Module",
+                files: [
+                    "app/api/account_management_routes.py",
+                    "app/repositories/account_management_repo.py",
+                    "app/services/account_management_service.py",
+                    "app/schemas/account_management_schema.py"
+                ],
+                routes: [
+                    "GET /accounts - Get all accounts",
+                    "GET /accounts/{account_no}/balance - Get account balance",
+                    "GET /accounts/{account_no}/owner - Get account owner details",
+                    "POST /accounts/create - Create new account",
+                    "PUT /accounts/{account_no} - Update account details",
+                    "GET /accounts/branch/{branch_id} - Get accounts by branch"
+                ],
+                sqlFunctions: [
+                    "-- Get all accounts with customer details",
+                    "-- Get account balance by account number",
+                    "-- Get account owner details by account number",
+                    "-- Create new savings account",
+                    "-- Update account details",
+                    "-- Get accounts by branch",
+                    "-- Get customer's all accounts by NIC"
+                ]
+            },
+
+
+dewni: {
+                name: "Dewni",
+                role: "Customer & Branch Management Module",
+                files: [
+                    "app/api/customer_branch_routes.py",
+                    "app/repositories/customer_branch_repo.py",
+                    "app/services/customer_branch_service.py",
+                    "app/schemas/customer_branch_schema.py"
+                ],
+                routes: [
+                    "POST /customers - Create customer",
+                    "PUT /customers/{customer_id} - Update customer details",
+                    "GET /customers/{nic} - Get customer by NIC",
+                    "GET /customers - Get all customers",
+                    "GET /customers/{customer_id}/accounts - Get customer's accounts",
+                    "GET /branches - Get all branches",
+                    "POST /branches - Create branch",
+                    "PUT /branches/{branch_id} - Update branch"
+                ],
+                sqlFunctions: [
+                    "-- Create new customer",
+                    "-- Update customer details",
+                    "-- Get customer by NIC",
+                    "-- Get all customers",
+                    "-- Get customer's account details",
+                    "-- Get all branches",
+                    "-- Create new branch",
+                    "-- Update branch details",
+                    "-- Get branch details with employee count"
+                ]
+            },
+            ranuga: {
+                name: "Ranuga",
+                role: "Transaction Management Module",
+                files: [
+                    "app/api/transaction_management_routes.py",
+                    "app/repositories/transaction_management_repo.py",
+                    "app/services/transaction_management_service.py",
+                    "app/schemas/transaction_management_schema.py"
+                ],
+                routes: [
+                    "POST /transactions/deposit - Process deposit",
+                    "POST /transactions/withdraw - Process withdrawal",
+                    "GET /transactions/account/{account_no} - Get account transactions",
+                    "GET /transactions/report/branch/{branch_id} - Branch transaction report",
+                    "GET /transactions/report/date-range - Transactions by date range",
+                    "GET /transactions/summary/{account_no} - Transaction summary"
+                ],
+                sqlFunctions: [
+                    "-- Process deposit transaction",
+                    "-- Process withdrawal transaction",
+                    "-- Get transaction history by account",
+                    "-- Get transaction history by date range",
+                    "-- Get branch-wise transaction report",
+                    "-- Calculate daily/monthly transaction totals",
+                    "-- Get all transactions with account details"
+                ]
+            },
+            dewni: {
+                name: "Dewni",
+                role: "Customer & Branch Management Module",
+                files: [
+                    "app/api/customer_branch_routes.py",
+                    "app/repositories/customer_branch_repo.py",
+                    "app/services/customer_branch_service.py",
+                    "app/schemas/customer_branch_schema.py"
+                ],
+                routes: [
+                    "POST /customers - Create customer",
+                    "PUT /customers/{customer_id} - Update customer details",
+                    "GET /customers/{nic} - Get customer by NIC",
+                    "GET /customers - Get all customers",
+                    "GET /customers/{customer_id}/accounts - Get customer's accounts",
+                    "GET /branches - Get all branches",
+                    "POST /branches - Create branch",
+                    "PUT /branches/{branch_id} - Update branch"
+                ],
+                sqlFunctions: [
+                    "-- Create new customer",
+                    "-- Update customer details",
+                    "-- Get customer by NIC",
+                    "-- Get all customers",
+                    "-- Get customer's account details",
+                    "-- Get all branches",
+                    "-- Create new branch",
+                    "-- Update branch details",
+                    "-- Get branch details with employee count"
+                ]
+            },
+            sajiv: {
+                name: "Sajiv",
+                role: "Fixed Deposit & Plans Management Module",
+                files: [
+                    "app/api/fd_plans_routes.py",
+                    "app/repositories/fd_plans_repo.py",
+                    "app/services/fd_plans_service.py",
+                    "app/schemas/fd_plans_schema.py"
+                ],
+                routes: [
+                    "POST /fd/create - Create fixed deposit",
+                    "GET /fd/account/{account_no} - Get FD details",
+                    "GET /fd/maturity/{fd_id} - Calculate maturity amount",
+                    "GET /plans/fd - Get all FD plans",
+                    "POST /plans/fd - Create FD plan",
+                    "GET /plans/savings - Get all savings plans",
+                    "POST /plans/savings - Create savings plan",
+                    "PUT /plans/fd/{fd_plan_id} - Update FD plan"
+                ],
+                sqlFunctions: [
+                    "-- Create new FD account",
+                    "-- Get FD details by account",
+                    "-- Calculate FD maturity amount",
+                    "-- Get all FD plans",
+                    "-- Create/Update FD plans",
+                    "-- Get all savings plans",
+                    "-- Create/Update savings plans",
+                    "-- Get FD reports by branch"
+                ]
+            }
+        };
+
+        function showWork(member) {
+            const data = workData[member];
+            const workDisplay = document.getElementById('workDisplay');
+            
+            const avatar = data.name.charAt(0);
+            
+            workDisplay.innerHTML = `
+                <div class="work-header">
+                    <div class="member-avatar">${avatar}</div>
+                    <div>
+                        <h2>${data.name}'s Tasks</h2>
+                        <p style="color: #718096; margin-top: 5px;">${data.role}</p>
+                    </div>
+                </div>
+                
+                <div class="work-section">
+                    <h3>📁 Files to Create/Modify</h3>
+                    <div class="file-list">
+                        ${data.files.map(file => `<div class="file-item">${file}</div>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="work-section">
+                    <h3>🚀 API Routes to Implement</h3>
+                    <div class="route-list">
+                        ${data.routes.map(route => `<div class="route-item">${route}</div>`).join('')}
+                    </div>
+                </div>
+                
+                <div class="work-section">
+                    <h3>🗄️ SQL Functions Needed</h3>
+                    <div class="function-list">
+                        ${data.sqlFunctions.map(func => `<div class="function-item">${func}</div>`).join('')}
+                    </div>
+                </div>
+                
+                <button class="close-btn" onclick="hideWork()">Close Task Details</button>
+            `;
+            
+            workDisplay.style.display = 'block';
+            workDisplay.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function hideWork() {
+            const workDisplay = document.getElementById('workDisplay');
+            workDisplay.style.display = 'none';
+        }
+
+        // Add some interactivity
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.member-card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-5px) scale(1.02)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = 'translateY(0) scale(1)';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
